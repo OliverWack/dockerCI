@@ -17,7 +17,7 @@ services:
       - nw
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://localhost/gitlab/'
+        external_url '${URL_EXTERNAL}/gitlab/'
         web_server['username'] = 'git' 
         web_server['group'] = 'git'
     ports:
