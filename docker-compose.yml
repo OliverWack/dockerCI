@@ -11,7 +11,7 @@ volumes:
   
 services:
   gitlab:
-    image: gitlab/gitlab-ce:13.4.4-ce.0
+    image: gitlab/gitlab-ce:13.4.1-ce.0
     restart: "no"
     networks:
       - nw
