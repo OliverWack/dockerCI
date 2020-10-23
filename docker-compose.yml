@@ -2,6 +2,7 @@ version: "3.2"
 networks:
   nw:
 volumes:
+  gitlab_config:
   gitlab_logs:
   gitlab_data:
   jenkins_data:
@@ -10,13 +11,13 @@ volumes:
   
 services:
   gitlab:
-    image: gitlab/gitlab-ce:13.4.1-ce.0
+    image: gitlab/gitlab-ce:13.4.4-ce.0
     restart: "no"
     networks:
       - nw
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://docker.vm/gitlab/'
+        external_url 'http://localhost/gitlab/'
         web_server['username'] = 'git' 
         web_server['group'] = 'git'
     ports:
@@ -24,12 +25,12 @@ services:
       - "10443:443"
       - "10022:22"
     volumes:
-      - ${PWD}/config/gitlab:/etc/gitlab
+      - gitlab_config:/etc/gitlab
       - gitlab_logs:/var/log/gitlab
       - gitlab_data:/var/opt/gitlab
       
   jenkins:
-    image: jenkins/jenkins:2.235.1-lts-slim
+    image: jenkins/jenkins:2.249.2-lts-slim
     privileged: true
     restart: "no"
     ports:
@@ -47,7 +48,7 @@ services:
       - NEXUS_PORT=8081
       
   nexus:
-    image: sonatype/nexus3:3.24.0
+    image: sonatype/nexus3:3.28.1
     restart: "unless-stopped"
     ports:
       - "9091:8081"
@@ -60,7 +61,7 @@ services:
       - NEXUS_CONTEXT=nexus
       
   sonarqube:
-    image: sonarqube:8.3.1-community
+    image: sonarqube:8.5.0-community
     command: -Dsonar.web.context=/sonarqube
     restart: "unless-stopped"
     ports:
@@ -75,7 +76,7 @@ services:
      - SONARQUBE_JDBC_PASSWORD=${PASSWORD_SONAR}
       
   sonardb:
-    image: postgres:9.6.18-alpine
+    image: postgres:12.4-alpine
     networks:
       - nw
     restart: "unless-stopped"
